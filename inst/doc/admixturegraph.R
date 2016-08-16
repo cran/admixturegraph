@@ -14,7 +14,7 @@ edges <- parent_edges(c(edge("A", "AB"),
                         edge("B", "AB"),
                         edge("AB", "ABC"),
                         edge("C", "ABC")))
-graph <- agraph(leaves, inner_nodes, edges, NULL)
+graph <- agraph(leaves, inner_nodes, edges)
 plot(graph)
 
 ## ------------------------------------------------------------------------
@@ -24,7 +24,7 @@ edges <- parent_edges(c(edge("A", "AB"),
                         edge("B", "AB"),
                         edge("AB", "ABC"),
                         edge("C", "ABC")))
-graph <- agraph(leaves, inner_nodes, edges, NULL)
+graph <- agraph(leaves, inner_nodes, edges)
 
 ## ------------------------------------------------------------------------
 plot(graph)  
@@ -37,8 +37,8 @@ leaves <- c("A", "B", "C")
 inner_nodes <- c("a", "c", "ABC")
 edges <- parent_edges(c(edge("A", "a"), edge("a", "ABC"),
                         edge("C", "c"), edge("c", "ABC"),
-                        admixture_edge("B", "a", "c")))
-graph <- agraph(leaves, inner_nodes, edges, NULL)
+                        admixture_edge("B", "a", "c", "alpha")))
+graph <- agraph(leaves, inner_nodes, edges)
 
 plot(graph, show_inner_node_labels = TRUE)
 
@@ -48,8 +48,8 @@ inner_nodes <- c("a", "c", "b", "ABC")
 edges <- parent_edges(c(edge("A", "a"), edge("a", "ABC"),
                         edge("C", "c"), edge("c", "ABC"),
                         edge("B", "b"),
-                        admixture_edge("b", "a", "c")))
-graph <- agraph(leaves, inner_nodes, edges, NULL)
+                        admixture_edge("b", "a", "c", "alpha")))
+graph <- agraph(leaves, inner_nodes, edges)
 
 plot(graph, show_inner_node_labels = TRUE)
 
@@ -59,11 +59,8 @@ inner_nodes <- c("a", "c", "b", "ABC")
 edges <- parent_edges(c(edge("A", "a"), edge("a", "ABC"),
                         edge("C", "c"), edge("c", "ABC"),
                         edge("B", "b"),
-                        admixture_edge("b", "a", "c")))
-admixtures <- admixture_proportions(c(
-    admix_props("b", "a", "c", "x")
-    ))
-graph <- agraph(leaves, inner_nodes, edges, admixtures)
+                        admixture_edge("b", "a", "c", "alpha")))
+graph <- agraph(leaves, inner_nodes, edges)
 
 plot(graph, show_inner_node_labels = TRUE, show_admixture_labels = TRUE)
 
@@ -89,9 +86,8 @@ edges <- parent_edges(c(edge("BLK", "R"),
                         edge("x", "w"),
                         edge("y", "w"),
                         edge("z", "y"),
-                        admixture_edge("M", "s", "v")))
-admixtures <- admixture_proportions(c(admix_props("M", "s", "v", "a")))
-bears_graph <- agraph(leaves, inner_nodes, edges, admixtures)
+                        admixture_edge("M", "s", "v", "a")))
+bears_graph <- agraph(leaves, inner_nodes, edges)
 
 plot(bears_graph, platform = 1.4, show_admixture_labels = TRUE)
 

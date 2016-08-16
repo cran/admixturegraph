@@ -774,6 +774,7 @@ fast_fit <- function(data, graph,
                      optimisation_options = NULL,
                      parameters = extract_graph_parameters(graph),
                      iteration_multiplier = 3) {
+  
   withCallingHandlers({
     inner_fast_fit(data, graph, point, Z.value, concentration, optimisation_options,
                    parameters, iteration_multiplier)
@@ -927,6 +928,7 @@ fit_graph <- function(data, graph,
                       optimisation_options = NULL,
                       parameters = extract_graph_parameters(graph), 
                       iteration_multiplier = 3, qr_tol = 1e-8) {
+  
   withCallingHandlers({
     inner_fit_graph(data, graph, point, Z.value, concentration, optimisation_options,
                     parameters, iteration_multiplier, qr_tol)
@@ -1062,11 +1064,11 @@ print.agraph_fit <- function(x, ...) {
   print(x$call)
   cat("\n")
   R <- max(2^(length(x$best_fit)) - 1, 1)
-  if (length(x$complaint) > 0) {
+  if (R %in% x$complaint) {
     cat("None of the admixture proportions are properly fitted!")
     cat("\n")
   }
-  if (R %in% x$complaint) {
+  if (length(x$complaint) > 0) {
     cat("Not all of the admixture proportions are properly fitted!")
     cat("\n")
     cat("See summary.agraph_fit for a more detailed analysis.")
@@ -1126,9 +1128,6 @@ summary.agraph_fit <- function(object, ...) {
   R <- 2^(length(parameters$admix_prop)) - 1
   if (R != 0) {
     for (r in object$complaint) {
-      if (r != R) {
-        cat("After fixing ")
-      }
       fixed <- ""
       complement <- ""
       for (a in seq(1, length(parameters$admix_prop))) {
@@ -1141,6 +1140,7 @@ summary.agraph_fit <- function(object, ...) {
       fixed <- paste("{", substring(fixed, 3), "}", sep = "")
       complement <- paste("{", substring(complement, 3), "}", sep = "")
       if (r != R) {
+        cat("After fixing ")
         cat(fixed)
         cat(" none of the remaining proportions ")
       } else {
