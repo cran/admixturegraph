@@ -4,12 +4,14 @@
 \alias{make_an_outgroup}
 \title{Make an outgroup.}
 \usage{
-make_an_outgroup(graph, outgroup)
+make_an_outgroup(graph, outgroup = "", all_neutral = FALSE)
 }
 \arguments{
 \item{graph}{An admixture graph.}
 
 \item{outgroup}{A leaf we want to be the outgroup.}
+
+\item{all_neutral}{For when other functions need to root graphs in a neutral way.}
 }
 \value{
 An admixture graph with the given leaf as an outgroup, if possible.
@@ -47,16 +49,18 @@ plot(graph)
 
 \code{\link{six_leaves_graphs}}
 
-\code{\link{seven_leaves_trees}}
+\code{\link{seven_leaves_graphs}}
 
 \code{\link{eight_leaves_trees}}
 
 \code{\link{fit_permutations_and_graphs}}
 
+\code{\link{fit_graph_list}}
+
 \code{\link{add_a_leaf}}
 
 \code{\link{add_an_admixture}}
 
-\code{\link{make_an_outgroup}}
+\code{\link{add_an_admixture2}}
 }
 

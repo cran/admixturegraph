@@ -1215,7 +1215,21 @@ all_paths_to_leaves <- function(graph, node) {
   path_list
 }
 
+#' Is descendant of.
+#' 
+#' Tells whether a given node is descendant of another given node in a graph.
+#' 
+#' @param graph      A graph.
+#' @param offspring  Potential offspring.
+#' @param ancestor   Potential ancestor.
+#' 
+#' @return A truth value.
+#' 
+#' @export
 is_descendant_of <- function(graph, offspring, ancestor) {
+  if (methods::is(graph, "agraph") == TRUE) {
+    graph <- refined_graph(graph)
+  }
   answer <- FALSE
   all_ancestors <- all_paths_to_root(graph, offspring)
   for (i in seq(1, length(all_ancestors))) {

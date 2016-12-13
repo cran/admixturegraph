@@ -2,11 +2,11 @@
 Admixture Graph Manipulation and Fitting
 ========================================
 
-The package provides functionality to analyse and test admixture graphs against the \(f\) statistics described in the paper [Ancient Admixture in Human History](http://tinyurl.com/o5a4kr4), Patternson *et al.*, Genetics, Vol. 192, 1065--1093, 2012.
+The package provides functionality to analyse and test admixture graphs against the *f* statistics described in the paper Ancient Admixture in Human History, Patterson *et al.*, Genetics, Vol. 192, 1065--1093, 2012.
 
-The \(f\) statistics --- \(f2\), \(f3\), and \(f4\) --- extract information about correlations between gene frequencies in different populations (or single diploid genome samples), which can be informative about patterns of gene flow between these populations in form of admixture events. If a graph is constructed as a hypothesis for the relationship between the populations, equations for the expected values of the \(f\) statistics can be extracted, as functions of edge lenghs --- representing genetic drift --- and admixture proportions.
+The *f* statistics --- *f2*, *f3*, and *f4* --- extract information about correlations between gene frequencies in different populations (or single diploid genome samples), which can be informative about patterns of gene flow between these populations in form of admixture events. If a graph is constructed as a hypothesis for the relationship between the populations, equations for the expected values of the *f* statistics can be extracted, as functions of edge lenghs --- representing genetic drift --- and admixture proportions.
 
-This package provides functions for extracting these equations and for fitting them against computed \(f\) statistics. It does not currently provide functions for computing the \(f\) statistics --- for that we refer to the [ADMIXTOOLS](https://github.com/DReichLab/AdmixTools) software package.
+This package provides functions for extracting these equations and for fitting them against computed *f* statistics. It does not currently provide functions for computing the *f* statistics --- for that we refer to the [ADMIXTOOLS](https://github.com/DReichLab/AdmixTools) software package.
 
 Example
 -------
@@ -15,7 +15,7 @@ Below is a quick example of how the package can be used. The example uses data f
 
 The BLK sample is the black bear, the PB sample is a polar bear, and the rest are brown bears.
 
-I have taken the \(f\) statistics from Table 1 in the paper:
+I have taken the *f* statistics from Table 1 in the paper:
 
 ``` r
 data(bears)
@@ -41,7 +41,7 @@ bears
 #> 18 BLK PB Sweden  Kenai 0.0719     9.6
 ```
 
-The `D` column is the \(f4(W,X;Y,Z)\) statistic and the `Z` column is the \(Z\)-values obtained from a blocked jacknife (see Patterson *et al.* for details).
+The `D` column is the f4(W,X;Y,Z) statistic and the `Z` column is the *Z*-values obtained from a blocked jacknife (see Patterson *et al.* for details).
 
 From the statistics we can see that the ABC bears (Adm, Bar and Chi) are closer related to the polar bears compared to the other brown bears. The paper explains this with gene flow from polar bears into the ABC bears and going further out from there, but we can also explain this by several waves of admixture from ancestral polar bears into brown bears:
 
@@ -71,52 +71,51 @@ edges <- parent_edges(c(edge("BLK", "R"),
                         edge("Adm1", "Adm"),
                         edge("Adm2", "Adm"),
                         
-                        admixture_edge("bc_a1", "pb_a1", "ABC"),
+                        admixture_edge("bc_a1", "pb_a1", "ABC", "a"),
                         edge("Adm", "ABC"),
                         
                         edge("ABC", "abc_a2"),
-                        admixture_edge("abc_a2", "pb_a2", "x"),
+                        admixture_edge("abc_a2", "pb_a2", "x", "b"),
                         
                         edge("Denali", "x"),
                         edge("x", "x_a3"),
-                        admixture_edge("x_a3", "pb_a3", "y"),
+                        admixture_edge("x_a3", "pb_a3", "y", "c"),
                       
                         edge("Kenai", "y"),
                         edge("y", "y_a4"),                        
-                        admixture_edge("y_a4", "pb_a4", "z"),
+                        admixture_edge("y_a4", "pb_a4", "z", "d"),
                         
                         edge("Sweden", "z"),
                         
                         edge("z", "PBBB"),
                         edge("PBBB", "R")))
- 
 
-admixtures <- admixture_proportions(c(admix_props("bc_a1", "pb_a1", "ABC", "a"),
-                                      admix_props("abc_a2", "pb_a2", "x", "b"),
-                                      admix_props("x_a3", "pb_a3", "y", "c"),
-                                      admix_props("y_a4", "pb_a4", "z", "d")))
-                                
-bears_graph <- agraph(leaves, inner_nodes, edges, admixtures)
-plot(bears_graph, show_inner_node_labels = TRUE, show_admixture_labels = TRUE)
+bears_graph <- agraph(leaves, inner_nodes, edges)
+plot(bears_graph, show_admixture_labels = TRUE)
 #> fminbnd:  Exiting: Maximum number of function evaluations has been exceeded
 #>          - increase MaxFunEvals option.
-#>          Current function value: 2097.43464986477
+#>          Current function value: 3027.37262644651
 ```
 
-![](README-graph-1.png)
+![](README-unnamed-chunk-3-1.png)
 
 Fitting a graph to data
 -----------------------
 
-The graph makes predictions on how the \(f4\) statistics should look. The graph parameters can be fit to observed statistics using the `fit_graph` function:
+The graph makes predictions on how the *f4* statistics should look. The graph parameters can be fit to observed statistics using the `fit_graph` function:
 
 ``` r
 fit <- fit_graph(bears, bears_graph)
 fit
 #> 
-#> Call:
-#> fit_graph(bears, bears_graph)
-#> Minimal error: 0.001490682
+#> Call: inner_fit_graph(data, graph, point, Z.value, concentration, optimisation_options, 
+#>     parameters, iteration_multiplier, qr_tol)
+#> 
+#> None of the admixture proportions are properly fitted!
+#> Not all of the admixture proportions are properly fitted!
+#> See summary.agraph_fit for a more detailed analysis.
+#> 
+#> Minimal error: 12.98523
 ```
 
 You can get detailsabout the fit by calling the `summary.agraph_fit` function:
@@ -124,31 +123,32 @@ You can get detailsabout the fit by calling the `summary.agraph_fit` function:
 ``` r
 summary(fit)
 #> 
-#> Call: fit_graph(bears, bears_graph)
+#> Call: inner_fit_graph(data, graph, point, Z.value, concentration, optimisation_options, 
+#>     parameters, iteration_multiplier, qr_tol)
 #> 
-#> After fixing {a, b, c, d} none of the remaining proportions {} affect the quality of the fit!
+#> None of the proportions {a, b, c, d} affect the quality of the fit!
 #> 
 #> Optimal admixture proportions:
-#>          a          b          c          d 
-#> 0.03985233 0.91958225 0.99999900 0.56905827 
+#>         a         b         c         d 
+#> 0.3666992 0.4977105 0.9565926 0.7986799 
 #> 
 #> Optimal edge lengths:
 #>        edge_R_BLK       edge_R_PBBB       edge_PBBB_z   edge_PBBB_pb_a4 
-#>       0.000000000       0.000000000       0.000000000       0.104668543 
+#>        0.00000000        0.00000000        0.00000000        0.07852837 
 #>     edge_Adm_Adm1     edge_Adm_Adm2     edge_Chi_Chi1     edge_Chi_Chi2 
-#>       0.000000000       0.000000000       0.000000000       0.000000000 
+#>        0.00000000        0.00000000        0.00000000        0.00000000 
 #>       edge_BC_Bar       edge_BC_Chi      edge_ABC_Adm    edge_ABC_bc_a1 
-#>       0.000000000       0.000000000       0.000000000       0.000000000 
+#>        0.00000000        0.00000000        0.00000000        0.00000000 
 #>     edge_x_Denali     edge_x_abc_a2      edge_y_Kenai       edge_y_x_a3 
-#>       0.000000000       0.000000000       0.000000000       0.000000000 
+#>        0.00000000        0.00000000        0.00000000        0.00000000 
 #>     edge_z_Sweden       edge_z_y_a4     edge_pb_a1_PB  edge_pb_a1_bc_a1 
-#>       0.000000000       0.000000000       0.000000000       0.000000000 
+#>        0.00000000        0.00000000        0.00000000        0.00000000 
 #>  edge_pb_a2_pb_a1 edge_pb_a2_abc_a2  edge_pb_a3_pb_a2   edge_pb_a3_x_a3 
-#>       1.355528458       0.000000000       0.014259138       0.000000000 
+#>        0.13643125        0.00000000        0.02156832        0.00000000 
 #>  edge_pb_a4_pb_a3   edge_pb_a4_y_a4     edge_bc_a1_BC   edge_abc_a2_ABC 
-#>       0.008994011       0.000000000       0.000000000       0.000000000 
+#>        0.04010857        0.00000000        0.00000000        0.00000000 
 #>       edge_x_a3_x       edge_y_a4_y 
-#>       0.000000000       0.000000000 
+#>        0.00000000        0.00000000 
 #> 
 #> Solution to a homogeneous system of edge lengths with the optimal admixture proportions:
 #> Adding any such solution to the optimal one will not affect the error.
@@ -188,7 +188,7 @@ summary(fit)
 #> edge_pb_a4_pb_a3 = 0
 #> 
 #> Minimal error:
-#> 0.001490682
+#> 12.98523
 ```
 
 You can make a plot of the fit against the data by calling the `plot.agraph_fit` function:
@@ -197,9 +197,9 @@ You can make a plot of the fit against the data by calling the `plot.agraph_fit`
 plot(fit)
 ```
 
-![](README-fitted_data-1.png)
+![](README-unnamed-chunk-6-1.png)
 
-The plot shows the onserved \(f4\) statistics with error bars (in black) plus the predicted values from the graph.
+The plot shows the observed *f4* statistics with error bars (in black) plus the predicted values from the graph.
 
 The result of this is a `ggplot2` object that you can modify by adding `ggplot2` commands in the usual way.
 
